@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>lambertshader.frag</file>
+        <file>lambertshader.vert</file>
+    </qresource>
+</RCC>
