@@ -155,12 +155,11 @@ namespace GLDemo
                 Vector3f  acrossVector;
                 camera->calcWorldVectors(cameraPosition, viewVector, upVector, acrossVector);
 
-                Vector3f origPos = cameraPosition;
-
                 // NOTE: Vertical rotation is currently blorken. It appears to be rotating
                 // about the wrong axis, despite everything here appearing to show the correct value.
                 const Vector3f  target(camera->getLookAt());
                 Matrix3f rotateHorizontal, rotateVertical;
+                //rotateHorizontal.fromAxisAngle(xDist * M_PI, Vector3f(0,1,0));
                 rotateHorizontal.fromAxisAngle(xDist * M_PI, Vector3f(0,1,0));
                 rotateVertical.fromAxisAngle(yDist * M_PI, -acrossVector);
                 //rotateVertical.fromAxisAngle(yDist * M_PI, -Vector3f(0,0,1));

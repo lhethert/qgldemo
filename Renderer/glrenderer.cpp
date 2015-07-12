@@ -140,19 +140,19 @@ namespace GLDemo
         const float zFar        = m_camera->getFarPlaneDistance();
 
         m_matProj.makePerspectiveProjectionFOV(fov, aspectRatio, zNear, zFar);
-        m_camera->getWorldTransformation().toMatrix(m_matView);
+        m_camera->toViewMatrix(m_matView);
+        m_matViewInv = m_matView.inverse();
+
         Vector3f  cameraPosition;
         Vector3f  viewVector;
         Vector3f  upVector;
         Vector3f  acrossVector;
         m_camera->calcWorldVectors(cameraPosition, viewVector, upVector, acrossVector);
-
         std::cerr << "P: " << cameraPosition;
         std::cerr << "V: " << viewVector;
         std::cerr << "U: " << upVector;
         std::cerr << "A: " << acrossVector;
         std::cerr << "VIEW MAT: " << m_matView;
-        m_matViewInv = m_matView.inverse();
         return true;
     }
 

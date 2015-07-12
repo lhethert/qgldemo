@@ -36,14 +36,15 @@ namespace GLDemo
         void setUniformScale(float s)   { m_scale[0] = m_scale[1] = m_scale[2] = s; m_isUniformScale = true; m_isIdentity = false; }
         float getUniformScale() const   { return m_scale[0]; }
 
-        // Application functions
-        Vector3f apply(const Vector3f& v) const;
-        Vector3f applyInverse(const Vector3f& v) const;
-
-        void combine(const Transformation& m1, const Transformation& m2);
+        bool isIdentity() const { return m_isIdentity; }
 
         void toMatrix(Matrix4<float>& m) const;
         void fromMatrix(const Matrix4<float>& m);
+
+        // Application functions
+        Vector3f apply(const Vector3f& v) const;
+        Vector3f applyInverse(const Vector3f& v) const;
+        void combine(const Transformation& m1, const Transformation& m2);
 
     private:
         Matrix3f m_rotation;

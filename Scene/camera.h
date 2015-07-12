@@ -2,6 +2,7 @@
 #define GLDEMO_CAMERA_H
 
 #include "Math/vector3.h"
+#include "Math/matrix4.h"
 #include "spatialentity.h"
 
 namespace GLDemo
@@ -30,10 +31,8 @@ namespace GLDemo
 
       void calcWorldVectors(Vector3f& position, Vector3f& view, Vector3f& up, Vector3f& right);
 
-      /**
-       * \return The location that the camera is currently looking at.
-       */
-      const Vector3f& getLookAt() const { return m_lookAt; }
+      const Vector3f& getLookAt() const;
+      void toViewMatrix(Matrix4f& view) const;
 
       virtual Camera* clone() const;
 

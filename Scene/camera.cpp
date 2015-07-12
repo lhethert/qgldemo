@@ -53,6 +53,16 @@ namespace GLDemo
 
         Matrix3f m;
         m(0,0) = camRight.x();
+        m(0,1) = camRight.y();
+        m(0,2) = camRight.z();
+        m(1,0) = camUp.x();
+        m(1,1) = camUp.y();
+        m(1,2) = camUp.z();
+        m(2,0) = camView.x();
+        m(2,1) = camView.y();
+        m(2,2) = camView.z();
+        /*
+        m(0,0) = camRight.x();
         m(1,0) = camRight.y();
         m(2,0) = camRight.z();
         m(0,1) = camUp.x();
@@ -61,11 +71,16 @@ namespace GLDemo
         m(0,2) = camView.x();
         m(1,2) = camView.y();
         m(2,2) = camView.z();
+        */
 
-        getLocalTransformation().setRotation(m);
-        getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
-        getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
-        getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
+        Transformation& t = getLocalTransformation();
+        t.setRotation(m);
+        t.setTranslation(eye);
+
+        // The below is what we would set if we were optimising and setting a 4x4 matrix directly.
+        //getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
+        //getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
+        //getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
         updateGeometricState(0.0, true);
     }
 
@@ -82,6 +97,16 @@ namespace GLDemo
     {
         Matrix3f m;
         m(0,0) = camRight.x();
+        m(0,1) = camRight.y();
+        m(0,2) = camRight.z();
+        m(1,0) = camUp.x();
+        m(1,1) = camUp.y();
+        m(1,2) = camUp.z();
+        m(2,0) = -camView.x();
+        m(2,1) = -camView.y();
+        m(2,2) = -camView.z();
+        /*
+        m(0,0) = camRight.x();
         m(1,0) = camRight.y();
         m(2,0) = camRight.z();
         m(0,1) = camUp.x();
@@ -90,11 +115,15 @@ namespace GLDemo
         m(0,2) = -camView.x();
         m(1,2) = -camView.y();
         m(2,2) = -camView.z();
+        */
 
-        getLocalTransformation().setRotation(m);
-        getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
-        getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
-        getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
+        Transformation& t = getLocalTransformation();
+        t.setRotation(m);
+        t.setTranslation(eye);
+
+        //getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
+        //getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
+        //getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
         updateGeometricState(0.0, true);
     }
 
@@ -108,17 +137,43 @@ namespace GLDemo
     void Camera::calcWorldVectors(Vector3f& position, Vector3f& view, Vector3f& up, Vector3f& right)
     {
         const Transformation& world = getWorldTransformation();
-        Matrix3f rotation = world.getRotation();
-        position = rotation * -world.getTranslation();
-        view = -Vector3f(rotation(0,2), rotation(1,2), rotation(2,2));
-        up = Vector3f(rotation(0,1), rotation(1,1), rotation(2,1));
-        right = Vector3f(rotation(0,0), rotation(1,0), rotation(2,0));
         /*
+        Matrix3f rotation = world.getRotation();
+        //position = rotation * -world.getTranslation();
+        position = world.getTranslation();
+        view = -Vector3f(rotation(2,0), rotation(2,1), rotation(2,2));
+        up = Vector3f(rotation(1,0), rotation(1,1), rotation(1,2));
+        right = Vector3f(rotation(0,0), rotation(0,1), rotation(0,2));
+        */
         position = world.apply(Vector3f(0,0,0));
         view = (world.apply(Vector3f(0,0,-1)) - position).unitVector();
         up = (world.apply(Vector3f(0,1,0)) - position).unitVector();
         right = (world.apply(Vector3f(1,0,0)) - position).unitVector();
-        */
+    }
+
+
+    /**
+     * \param Reference to the view matrix equivalent to the camera's transform.
+     *
+     * The camera's transformation matrix will convert local coordinates in the camera's
+     * coordinate frame into world coordinates. To convert this transform into a view matrix,
+     * we take the inverse of it. This inverted matrix will convert world coordinates into
+     * view coordinates.
+     */
+    void Camera::toViewMatrix(Matrix4f& viewMatrix) const
+    {
+        Matrix4f tmp;
+        getWorldTransformation().toMatrix(tmp);
+        viewMatrix = tmp.inverse();
+    }
+
+
+    /**
+     * \return The location that the camera is currently looking at.
+     */
+    const Vector3f& Camera::getLookAt() const
+    {
+        return m_lookAt;
     }
 
 
