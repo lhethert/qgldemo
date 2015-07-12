@@ -1,6 +1,7 @@
 #ifndef GLDEMO_VECTOR4_H
 #define GLDEMO_VECTOR4_H
 
+#include "vector3.h"
 #include "vectorn.h"
 
 
@@ -35,6 +36,7 @@ namespace GLDemo
         Vector4 cross(const Vector4& v) const;
         Vector4 unitCross(const Vector4& v) const;
 
+        Vector3<Real> xyz() const { return Vector3<Real>(x(), y(), z()); }
     };
 
     typedef Vector4<float> Vector4f;

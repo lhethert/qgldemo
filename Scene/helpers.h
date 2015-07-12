@@ -26,7 +26,7 @@ namespace GLDemo
      */
     inline std::ostream& operator<<(std::ostream& os, const QString& t)
     {
-        os << std::string(t.toAscii().constData());
+        os << std::string(t.toLatin1().constData());
         return os;
     }
 }

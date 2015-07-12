@@ -90,11 +90,11 @@ namespace GLDemo
     Vector4<Real> Matrix4<Real>::operator* (const Vector4<Real>& v) const
     {
         Vector4<Real> result;
-        for (int i = 0; i < 4; ++i)
+        for (int row = 0; row < 4; ++row)
         {
-            for (int j = 0; j < 4; ++j)
+            for (int col = 0; col < 4; ++col)
             {
-                result[i] += (*this)[i + j * 4] * v[j];
+                result[row] += (*this)(row, col) * v[col];
             }
         }
 

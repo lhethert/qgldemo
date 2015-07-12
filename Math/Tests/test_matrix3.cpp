@@ -53,7 +53,6 @@ namespace GLDemo
         void  testDeterminant()
         {
             float det = m_matrixInvertible.determinant();
-            std::cout << det << std::endl;
             QVERIFY( Math<float>::FEqual(det, -2.0f));
         }
 
@@ -66,6 +65,66 @@ namespace GLDemo
             Matrix3f expResult( Matrix3f::createIdentity() );
             Matrix3f result = m_matrixInvertible * m_matrixInvertible.inverse();
             QVERIFY(result == expResult);
+        }
+
+
+        /**
+         *
+         */
+        void  testFromAxisAngle1()
+        {
+            // 30 degree rotation about the z axis
+            const float root3on2 = Math<float>::Sqrt(3) * 0.5;
+            float results[9] = {
+                root3on2, -0.5, 0,
+                0.5, root3on2, 0,
+                0, 0, 1
+            };
+
+            Matrix3f mResults(results);
+            Matrix3f rotation;
+            rotation.fromAxisAngle(-Math<float>::PI / 6, Vector3f(0.0f, 0.0f, 1.0f));
+            QVERIFY(mResults == rotation);
+        }
+
+
+        /**
+         *
+         */
+        void  testFromAxisAngle2()
+        {
+            // 30 degree rotation about the z axis
+            const float root3on2 = Math<float>::Sqrt(3) * 0.5;
+            float results[9] = {
+                root3on2, 0, 0.5,
+                0, 1, 0,
+                -0.5, 0, root3on2
+            };
+
+            Matrix3f mResults(results);
+            Matrix3f rotation;
+            rotation.fromAxisAngle(-Math<float>::PI / 6, Vector3f(0.0f, 1.0f, 0.0f));
+            QVERIFY(mResults == rotation);
+        }
+
+
+        /**
+         *
+         */
+        void  testFromAxisAngle3()
+        {
+            // 30 degree rotation about the z axis
+            const float root3on2 = Math<float>::Sqrt(3.0f) * 0.5f;
+            float results[9] = {
+                1.0f, 0, 0,
+                0, root3on2, -0.5f,
+                0, 0.5f, root3on2
+            };
+
+            Matrix3f mResults(results);
+            Matrix3f rotation;
+            rotation.fromAxisAngle(-Math<float>::PI / 6, Vector3f(1.0f, 0.0f, 0.0f));
+            QVERIFY(mResults == rotation);
         }
 
     };

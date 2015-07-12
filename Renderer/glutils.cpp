@@ -64,8 +64,8 @@ namespace GLDemo
             std::ostringstream oss;
             oss << QGLContext::currentContext();
             QString errorString(QString("ERROR: OpenGL error:\n%1\nContext:%2").arg(errorReason).arg(oss.str().c_str()));
-            std::cout << errorString.toAscii().constData() << std::endl;
-            std::cerr << errorString.toAscii().constData() << std::endl;
+            std::cout << errorString.toLatin1().constData() << std::endl;
+            std::cerr << errorString.toLatin1().constData() << std::endl;
             haveErrors = true;
 
             if (currentError++ == maxErrors)

@@ -52,7 +52,6 @@ namespace GLDemo
         void  testDeterminant()
         {
             float det = m_matrixInvertible.determinant();
-            std::cout << det << std::endl;
             QVERIFY( Math<float>::FEqual(det, -2.0f));
         }
 

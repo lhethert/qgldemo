@@ -82,11 +82,11 @@ namespace GLDemo
     Vector3<Real> Matrix3<Real>::operator* (const Vector3<Real>& v) const
     {
         Vector3<Real> result;
-        for (int i = 0; i < 3; ++i)
+        for (int row = 0; row < 3; ++row)
         {
-            for (int j = 0; j < 3; ++j)
+            for (int col = 0; col < 3; ++col)
             {
-                result[i] += (*this)[i + j * 3] * v[j];
+                result[row] += (*this)(row, col) * v[col];
             }
         }
 

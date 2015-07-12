@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <QGLContext>
 #include <QVBoxLayout>
 
 #include "glwidget.h"

@@ -31,3 +31,5 @@ list(APPEND SOURCES
     ${GLDEMO_SOURCE_DIR}/Scene/spatialentity.cpp
     ${GLDEMO_SOURCE_DIR}/Scene/transformation.cpp
 )
+
+include(${GLDEMO_SOURCE_DIR}/Scene/Tests/CMakeLists.txt)

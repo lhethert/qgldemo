@@ -8,6 +8,9 @@ is a small playground for me to test out new things.
 The application is very much a work in progress, as I don't get as much time to 
 hack away at it as I'd like.
 
+*NOTE:* So far I have only compiled this on OSX 10.9 Mavericks, but it should 
+compile fine on other platforms as well.
+
 REQUIREMENTS
 -------------
 To build this source you will need installed:

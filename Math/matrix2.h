@@ -79,11 +79,11 @@ namespace GLDemo
     Vector2<Real> Matrix2<Real>::operator* (const Vector2<Real>& v) const
     {
         Vector2<Real> result;
-        for (int i = 0; i < 2; ++i)
+        for (int row = 0; row < 2; ++row)
         {
-            for (int j = 0; j < 2; ++j)
+            for (int col = 0; col < 2; ++col)
             {
-                result[i] += (*this)[i + j * 2] * v[j];
+                result[row] += (*this)(row, col) * v[col];
             }
         }
 

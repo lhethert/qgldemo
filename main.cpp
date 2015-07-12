@@ -20,7 +20,8 @@ int main(int argc, char* argv[])
     // Hard code the creation of our scene for now. Can move this to a file format eventually.
     Scene scene;
     Camera* camera = new Camera();
-    camera->setCameraView(Vector3f(0, 0, 10), Vector3f(0, 1, 0), Vector3f(0, 0, 0));
+    //camera->setCameraView(Vector3f(0, 0, 10), Vector3f(0, 1, 0), Vector3f(0, 0, 0));
+    camera->setCameraView(Vector3f(10, 0, 0), Vector3f(0, 1, 0), Vector3f(0, 0, 0));
     camera->setFieldOfView(45.0);
 
     PtrMesh cubeMesh(new CubeMesh("Cube"));

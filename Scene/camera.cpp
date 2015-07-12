@@ -113,6 +113,12 @@ namespace GLDemo
         view = -Vector3f(rotation(0,2), rotation(1,2), rotation(2,2));
         up = Vector3f(rotation(0,1), rotation(1,1), rotation(2,1));
         right = Vector3f(rotation(0,0), rotation(1,0), rotation(2,0));
+        /*
+        position = world.apply(Vector3f(0,0,0));
+        view = (world.apply(Vector3f(0,0,-1)) - position).unitVector();
+        up = (world.apply(Vector3f(0,1,0)) - position).unitVector();
+        right = (world.apply(Vector3f(1,0,0)) - position).unitVector();
+        */
     }
 
 

@@ -155,23 +155,27 @@ namespace GLDemo
                 Vector3f  acrossVector;
                 camera->calcWorldVectors(cameraPosition, viewVector, upVector, acrossVector);
 
+                Vector3f origPos = cameraPosition;
+
                 // NOTE: Vertical rotation is currently blorken. It appears to be rotating
-                // about the wrong axis, despite everything here appearing to show the
-                // correct value.
+                // about the wrong axis, despite everything here appearing to show the correct value.
                 const Vector3f  target(camera->getLookAt());
                 Matrix3f rotateHorizontal, rotateVertical;
                 rotateHorizontal.fromAxisAngle(xDist * M_PI, Vector3f(0,1,0));
                 rotateVertical.fromAxisAngle(yDist * M_PI, -acrossVector);
+                //rotateVertical.fromAxisAngle(yDist * M_PI, -Vector3f(0,0,1));
                 cameraPosition = rotateVertical * (cameraPosition - target) + target;
                 cameraPosition = rotateHorizontal * (cameraPosition - target) + target;
 
                 // Re-align our vectors so make them orthogonal
-                const Vector3f backward( cameraPosition - target );
+                const Vector3f backward( (cameraPosition - target).unitVector() );
                 acrossVector = backward.unitCross(Vector3f(0,1,0));
-                upVector = acrossVector.unitCross(backward);
+                upVector = backward.unitCross(acrossVector);
+                //upVector = acrossVector.unitCross(backward);
 
                 // Update the camera view.
                 camera->setCameraView(cameraPosition, upVector, target);
+                //camera->setCameraView(cameraPosition, backward, upVector, acrossVector);
                 updateGL();
             }
             else if (event->modifiers() == Qt::ShiftModifier)

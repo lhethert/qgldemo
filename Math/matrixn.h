@@ -36,8 +36,8 @@ namespace GLDemo
         //Access operations
         Real  operator[](int i) const        { assert(i < TOTAL_ELEMENTS); return m_components[i]; }
         Real& operator[](int i)              { assert(i < TOTAL_ELEMENTS); return m_components[i]; }
-        Real  operator()(int i, int j) const { assert(i < N && j < N); return m_components[i + j * N]; }
-        Real& operator()(int i, int j)       { assert(i < N && j < N); return m_components[i + j * N]; }
+        Real  operator()(int row, int col) const { assert(row < N && col < N); return m_components[row + col * N]; }
+        Real& operator()(int row, int col)       { assert(row < N && col < N); return m_components[row + col * N]; }
 
         const Real* toPointer() const  { return (Real*)this; }
         Real* toPointer()              { return (Real*)this; }
@@ -91,11 +91,11 @@ namespace GLDemo
         friend std::ostream& operator<< (std::ostream& stream, const MatrixN<Derived, Real, N>& m)
         {
             stream << "{ " << std::endl;
-            for (int i = 0; i < N; ++i)
+            for (int row = 0; row < N; ++row)
             {
-                for (int j = 0; j < N; ++j)
+                for (int col = 0; col < N; ++col)
                 {
-                    stream << m(i,j) << ",\t";
+                    stream << m(row,col) << ",\t";
                 }
                 stream << std::endl;
             }
@@ -146,11 +146,11 @@ namespace GLDemo
         if (transposeM)
         {
             //copy transpose
-            for (int i = 0; i < N; ++i)
+            for (int row = 0; row < N; ++row)
             {
-                for (int j = 0; j < N; ++j)
+                for (int col = 0; col < N; ++col)
                 {
-                    m_components[i + j * N] = m[i * N + j];
+                    m_components[row + col * N] = m[row * N + col];
                 }
             }
         }
@@ -286,13 +286,14 @@ namespace GLDemo
     Derived MatrixN<Derived, Real, N>::operator* (const Derived& m) const
     {
         Derived result;
-        for (int i = 0; i < N; ++i)
+        for (int row = 0; row < N; ++row)
         {
-            for (int j = 0; j < N; ++j)
+            for (int col = 0; col < N; ++col)
             {
-                for (int k = 0; k < N; ++k)
+                for (int i = 0; i < N; ++i)
                 {
-                    result[i + j * N] += (m_components[i + k * N] * m[k + j * N]);
+                    // result cell = our row * others col
+                    result[row + col * N] += (m_components[row + i * N] * m[i + col * N]);
                 }
             }
         }
@@ -556,7 +557,7 @@ namespace GLDemo
         std::memset(m_components, 0, sizeof(Real) * TOTAL_ELEMENTS);
         for (int i = 0; i < TOTAL_ELEMENTS; i += N + 1)
         {
-                m_components[i] = (Real)1.0;
+            m_components[i] = (Real)1.0;
         }
     }
 
@@ -598,11 +599,11 @@ namespace GLDemo
     Derived MatrixN<Derived, Real, N>::transpose() const
     {
         Derived transpose;
-        for (int i = 0; i < N; ++i)
+        for (int row = 0; row < N; ++row)
         {
-            for (int j = 0; j < N; ++j)
+            for (int col = 0; col < N; ++col)
             {
-                transpose[i + j * N] = m_components[i * N + j];
+                transpose[row + col * N] = m_components[row * N + col];
             }
         }
 
@@ -621,16 +622,7 @@ namespace GLDemo
     template<class Derived, class Real, int N>
     Derived MatrixN<Derived, Real, N>::transposeTimes(const Derived& m) const
     {
-        Derived transposeThis;
-        for (int i = 0; i < N; ++i)
-        {
-            for (int j = 0; j < N; ++j)
-            {
-                transposeThis[i + j * N] = m_components[i * N + j];
-            }
-        }
-
-        return transposeThis * m;
+        return transpose() * m;
     }
 
 
@@ -645,16 +637,7 @@ namespace GLDemo
     template<class Derived, class Real, int N>
     Derived MatrixN<Derived, Real, N>::timesTranspose(const Derived& m) const
     {
-        Derived transposeM;
-        for (int i = 0; i < N; ++i)
-        {
-            for (int j = 0; j < N; ++j)
-            {
-                transposeM[i + j * N] = m[i * N + j];
-            }
-        }
-
-        return (*static_cast<const Derived*>(this)) * transposeM;
+        return (*this * m).transpose();
     }
 
 

@@ -91,6 +91,7 @@ namespace GLDemo
 
         /**
          * Test the indexing operators, knowing that the data is in column-major order.
+         * operator()(row, col).
          */
         void testIndexOperators()
         {
@@ -163,6 +164,73 @@ namespace GLDemo
 
 
         /**
+         *
+         */
+        void  testTranspose()
+        {
+            float data1T[16] = {
+                1, 5, 9, 13,
+                2, 6, 10, 14,
+                3, 7, 11, 15,
+                4, 8, 12, 16
+            };
+            Matrix4f expResult(data1T);
+            Matrix4f result = m_matrix1.transpose();
+            QVERIFY(expResult == result);
+        }
+
+
+        /**
+         *
+         */
+        void  testTimesTranspose()
+        {
+            Matrix4f result = m_matrix1.timesTranspose(m_matrix2);
+            QVERIFY( Math<float>::FEqual(result(0,0), (1 + 5 + 9 + 13)) );
+            QVERIFY( Math<float>::FEqual(result(1,0), (2 + 10 + 18 + 26)) );
+            QVERIFY( Math<float>::FEqual(result(2,0), (3 + 15 + 27 + 39)) );
+            QVERIFY( Math<float>::FEqual(result(3,0), (4 + 20 + 36 + 52)) );
+            QVERIFY( Math<float>::FEqual(result(0,1), (2 + 6 + 10 + 14)) );
+            QVERIFY( Math<float>::FEqual(result(1,1), (4 + 12 + 20 + 28)) );
+            QVERIFY( Math<float>::FEqual(result(2,1), (6 + 18 + 30 + 42)) );
+            QVERIFY( Math<float>::FEqual(result(3,1), (8 + 24 + 40 + 56)) );
+            QVERIFY( Math<float>::FEqual(result(0,2), (3 + 7 + 11 + 15)) );
+            QVERIFY( Math<float>::FEqual(result(1,2), (6 + 14 + 22 + 30)) );
+            QVERIFY( Math<float>::FEqual(result(2,2), (9 + 21 + 33 + 45)) );
+            QVERIFY( Math<float>::FEqual(result(3,2), (12 + 28 + 44 + 60)) );
+            QVERIFY( Math<float>::FEqual(result(0,3), (4 + 8 + 12 + 16)) );
+            QVERIFY( Math<float>::FEqual(result(1,3), (8 + 16 + 24 + 32)) );
+            QVERIFY( Math<float>::FEqual(result(2,3), (12 + 24 + 36 + 48)) );
+            QVERIFY( Math<float>::FEqual(result(3,3), (16 + 32 + 48 + 64)) );
+        }
+
+
+        /**
+         *
+         */
+        void  testTransposeTimes()
+        {
+            Matrix4f result = m_matrix1.transposeTimes(m_matrix2);
+            QVERIFY( Math<float>::FEqual(result(0,0), (1 + 2 + 3 + 4)) );
+            QVERIFY( Math<float>::FEqual(result(0,1), (2 + 4 + 6 + 8)) );
+            QVERIFY( Math<float>::FEqual(result(0,2), (3 + 6 + 9 + 12)) );
+            QVERIFY( Math<float>::FEqual(result(0,3), (4 + 8 + 12 + 16)) );
+            QVERIFY( Math<float>::FEqual(result(1,0), (5 + 6 + 7 + 8)) );
+            QVERIFY( Math<float>::FEqual(result(1,1), (10 + 12 + 14 + 16)) );
+            QVERIFY( Math<float>::FEqual(result(1,2), (15 + 18 + 21 + 24)) );
+            QVERIFY( Math<float>::FEqual(result(1,3), (20 + 24 + 28 + 32)) );
+            QVERIFY( Math<float>::FEqual(result(2,0), (9 + 10 + 11 + 12)) );
+            QVERIFY( Math<float>::FEqual(result(2,1), (18 + 20 + 22 + 24)) );
+            QVERIFY( Math<float>::FEqual(result(2,2), (27 + 30 + 33 + 36)) );
+            QVERIFY( Math<float>::FEqual(result(2,3), (36 + 40 + 44 + 48)) );
+            QVERIFY( Math<float>::FEqual(result(3,0), (13 + 14 + 15 + 16)) );
+            QVERIFY( Math<float>::FEqual(result(3,1), (26 + 28 + 30 + 32)) );
+            QVERIFY( Math<float>::FEqual(result(3,2), (39 + 42 + 45 + 48)) );
+            QVERIFY( Math<float>::FEqual(result(3,3), (52 + 56 + 60 + 64)) );
+        }
+
+
+        /**
          * Test matrix multiplication.
          */
         void  testInverse()
@@ -170,6 +238,50 @@ namespace GLDemo
             Matrix4f expResult( Matrix4f::createIdentity() );
             Matrix4f result = m_matrixInvertible * m_matrixInvertible.inverse();
             QVERIFY(result == expResult);
+        }
+
+
+        /**
+         *
+         */
+        void  testMultVector()
+        {
+            Vector4f expResult(1, 2, 3, 4);
+            Vector4f v(1,0,0,0);
+            v = m_matrix1 * v;
+            QVERIFY(expResult == v);
+        }
+
+
+        /**
+         *
+         */
+        void  testSubtraction()
+        {
+            float data[16] = {
+                0, 1, 2, 3,
+                3, 4, 5, 6,
+                6, 7, 8, 9,
+                9, 10, 11, 12
+            };
+            Matrix4f expResult(data);
+            QVERIFY(expResult == (m_matrix1 - m_matrix2));
+        }
+
+
+        /**
+         *
+         */
+        void  testAddition()
+        {
+            float data[16] = {
+                2, 3, 4, 5,
+                7, 8, 9, 10,
+                12, 13, 14, 15,
+                17, 18, 19, 20
+            };
+            Matrix4f expResult(data);
+            QVERIFY(expResult == (m_matrix1 + m_matrix2));
         }
 
     };

@@ -3,6 +3,7 @@
 
 #include <cfloat>
 #include <cmath>
+#include <limits>
 
 namespace GLDemo
 {
@@ -37,8 +38,9 @@ namespace GLDemo
         static bool QuadraticRealRoots(const Real& a, const Real& b, const Real& c, Real roots[]);
         static bool CubicRealRoots(const Real& a, const Real& b, const Real& c, const Real& d, Real roots[]);
 
+        static const Real Epsilon();
+
         // General purpose constants for convenience.
-        static const float EPSILON;
         static const float PI;
         static const float TWO_PI;
         static const float HALF_PI;
@@ -47,7 +49,12 @@ namespace GLDemo
         static const float MAX_REAL;
     };
 
-    template<class Real> const float Math<Real>::EPSILON = 1E-13;
+    template<class Real>
+    inline const Real Math<Real>::Epsilon()
+    {
+        return 0.000001;
+    }
+
     template<class Real> const float Math<Real>::PI = 3.141592654f;
     template<class Real> const float Math<Real>::TWO_PI = PI * 2;
     template<class Real> const float Math<Real>::HALF_PI = PI / 2;
@@ -59,7 +66,7 @@ namespace GLDemo
      */
     template<class Real> inline bool Math<Real>::FEqual(const Real& a, const Real& b)
     {
-        return std::fabs(a - b) <= std::fmax((Real)1.0, std::fmax(std::fabs(a), std::fabs(b)) ) * Math<Real>::EPSILON;
+        return std::fabs(a - b) <= std::fmax((Real)1.0, std::fmax(std::fabs(a), std::fabs(b)) ) * Math<Real>::Epsilon();
     }
 
 
