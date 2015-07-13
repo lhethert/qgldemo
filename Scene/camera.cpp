@@ -46,22 +46,19 @@ namespace GLDemo
      */
     void Camera::setCameraView(const Vector3f& eye, const Vector3f& up, const Vector3f& lookAt)
     {
+        // Negative view vector (eye - lookat)
         Vector3f camView = (eye - lookAt).unitVector();
         Vector3f camRight = up.unitCross(camView);
         Vector3f camUp = camView.unitCross(camRight);
         m_lookAt = lookAt;
 
+        // Rotation matrix is built up from *column* vectors.
+        // Remember that this rotation matrix represents the camera's
+        // orientation and translation. The view matrix on the other hand,
+        // is used to convert world coordinates into the camera's coordinate
+        // frame. Therefore, the view matrix will contain an inversion of
+        // this matrix (i.e. row vectors).
         Matrix3f m;
-        m(0,0) = camRight.x();
-        m(0,1) = camRight.y();
-        m(0,2) = camRight.z();
-        m(1,0) = camUp.x();
-        m(1,1) = camUp.y();
-        m(1,2) = camUp.z();
-        m(2,0) = camView.x();
-        m(2,1) = camView.y();
-        m(2,2) = camView.z();
-        /*
         m(0,0) = camRight.x();
         m(1,0) = camRight.y();
         m(2,0) = camRight.z();
@@ -71,16 +68,14 @@ namespace GLDemo
         m(0,2) = camView.x();
         m(1,2) = camView.y();
         m(2,2) = camView.z();
-        */
 
+        // Set the local translation and rotation. We don't need to
+        // multiply, as the Transformation class does this for us.
         Transformation& t = getLocalTransformation();
         t.setRotation(m);
         t.setTranslation(eye);
 
         // The below is what we would set if we were optimising and setting a 4x4 matrix directly.
-        //getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
-        //getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
-        //getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
         updateGeometricState(0.0, true);
     }
 
@@ -95,17 +90,13 @@ namespace GLDemo
      */
     void Camera::setCameraView(const Vector3f& eye, const Vector3f& camView, const Vector3f& camUp, const Vector3f& camRight)
     {
+        // Rotation matrix is built up from *column* vectors.
+        // Remember that this rotation matrix represents the camera's
+        // orientation and translation. The view matrix on the other hand,
+        // is used to convert world coordinates into the camera's coordinate
+        // frame. Therefore, the view matrix will contain an inversion of
+        // this matrix (i.e. row vectors).
         Matrix3f m;
-        m(0,0) = camRight.x();
-        m(0,1) = camRight.y();
-        m(0,2) = camRight.z();
-        m(1,0) = camUp.x();
-        m(1,1) = camUp.y();
-        m(1,2) = camUp.z();
-        m(2,0) = -camView.x();
-        m(2,1) = -camView.y();
-        m(2,2) = -camView.z();
-        /*
         m(0,0) = camRight.x();
         m(1,0) = camRight.y();
         m(2,0) = camRight.z();
@@ -115,15 +106,12 @@ namespace GLDemo
         m(0,2) = -camView.x();
         m(1,2) = -camView.y();
         m(2,2) = -camView.z();
-        */
 
+        // Set the local translation and rotation. We don't need to
+        // multiply, as the Transformation class does this for us.
         Transformation& t = getLocalTransformation();
         t.setRotation(m);
         t.setTranslation(eye);
-
-        //getLocalTransformation().getTranslation().x() = -(camRight.dot(eye));
-        //getLocalTransformation().getTranslation().y() = -(camUp.dot(eye));
-        //getLocalTransformation().getTranslation().z() = -(camView.dot(eye));
         updateGeometricState(0.0, true);
     }
 
@@ -136,15 +124,8 @@ namespace GLDemo
      */
     void Camera::calcWorldVectors(Vector3f& position, Vector3f& view, Vector3f& up, Vector3f& right)
     {
+        // We determine our vectors by applying the transformation to them.
         const Transformation& world = getWorldTransformation();
-        /*
-        Matrix3f rotation = world.getRotation();
-        //position = rotation * -world.getTranslation();
-        position = world.getTranslation();
-        view = -Vector3f(rotation(2,0), rotation(2,1), rotation(2,2));
-        up = Vector3f(rotation(1,0), rotation(1,1), rotation(1,2));
-        right = Vector3f(rotation(0,0), rotation(0,1), rotation(0,2));
-        */
         position = world.apply(Vector3f(0,0,0));
         view = (world.apply(Vector3f(0,0,-1)) - position).unitVector();
         up = (world.apply(Vector3f(0,1,0)) - position).unitVector();
@@ -156,9 +137,10 @@ namespace GLDemo
      * \param Reference to the view matrix equivalent to the camera's transform.
      *
      * The camera's transformation matrix will convert local coordinates in the camera's
-     * coordinate frame into world coordinates. To convert this transform into a view matrix,
-     * we take the inverse of it. This inverted matrix will convert world coordinates into
-     * view coordinates.
+     * coordinate frame into world coordinates (just like any other SpatialEntity).
+     * To convert this transform into a view matrix, we need to invert this matrix.
+     * The inverted matrix will convert world coordinates into view coordinates (coordinates
+     * relative to the camera's location and orientation).
      */
     void Camera::toViewMatrix(Matrix4f& viewMatrix) const
     {

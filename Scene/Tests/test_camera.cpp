@@ -97,8 +97,9 @@ namespace GLDemo
             Matrix3f rotationInv = rotation.inverse();
             Vector3f translation(1.0f, 2.0f, 3.0f);
 
-            // Use the inverse rotation matrix here - our rotation matrix indicates
-            // what our camera orientation is, but the inverse is what our matrix needs to be.
+            // Use the inverse rotation matrix here - our rotation matrix
+            // indicates what our camera orientation is, but the inverse
+            // is what our view matrix needs to be.
             Matrix4f expRotMatrix;
             expRotMatrix.toIdentity();
             for (int i = 0; i < 3; ++i)
@@ -119,10 +120,6 @@ namespace GLDemo
             cam.getLocalTransformation().setRotation(rotation);
             cam.getLocalTransformation().setTranslation(translation);
             cam.updateGeometricState(0.0, true);
-
-            Matrix4f cameraMatrix;
-            cam.getWorldTransformation().toMatrix(cameraMatrix);
-
             Matrix4f viewMatrix;
             cam.toViewMatrix(viewMatrix);
             QVERIFY(viewMatrix == expMatrix);
